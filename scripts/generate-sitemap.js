@@ -37,7 +37,7 @@ const registryPath = path.join(__dirname, '..', 'src', 'data', 'registry.js');
       urls.add(`${baseUrl}/category/${catSlug}`);
     }
     // Include the sitemap itself (so Google can discover it if needed)
-    urls.add(`${baseUrl}/sitemap.xml`);
+// urls.add(`${baseUrl}/sitemap.xml`);
 
     // Build XML content
     const sitemapLines = [
