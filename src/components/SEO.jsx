@@ -21,19 +21,23 @@ export default function SEO({
     ? siteConfig.metaDescriptionFormula.replace('%s', title).replace('%s', description)
     : description;
 
+  // Use provided canonical or auto-generate based on window.location
+  const canonicalUrl = canonical || (typeof window !== 'undefined' ? `${siteConfig.baseUrl}${window.location.pathname}` : siteConfig.baseUrl);
+
   return (
     <Helmet>
       {/* Basic HTML Meta Tags */}
       <title>{fullTitle}</title>
       <meta name="description" content={metaDesc} />
-      {canonical && <link rel="canonical" href={canonical} />}
+      <meta name="robots" content="index, follow" />
+      <link rel="canonical" href={canonicalUrl} />
 
       {/* Open Graph / Facebook */}
       <meta property="og:type" content={type} />
       <meta property="og:title" content={fullTitle} />
       <meta property="og:description" content={metaDesc} />
       <meta property="og:site_name" content={siteName} />
-      {canonical && <meta property="og:url" content={canonical} />}
+      <meta property="og:url" content={canonicalUrl} />
       <meta property="og:image" content={image} />
 
       {/* Twitter */}

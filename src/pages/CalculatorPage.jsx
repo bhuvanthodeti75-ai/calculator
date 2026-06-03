@@ -4,9 +4,10 @@ import { calculatorsRegistry } from '../data/registry';
 import { isBookmarked, toggleBookmark, saveCalculation } from '../utils/bookmarks';
 import { 
   Bookmark, Share2, HelpCircle, Info, ChevronDown, 
-  ChevronUp, Copy, Check, RotateCcw, Star 
+  ChevronUp, Copy, Check, RotateCcw, Star, AlertCircle
 } from 'lucide-react';
 import * as CustomCalcs from '../components/CustomRenderers';
+import SEO from '../components/SEO';
 
 export default function CalculatorPage({ slug, setBookmarks, addRecentItem }) {
   const { navigate } = useRouter();
@@ -34,18 +35,6 @@ export default function CalculatorPage({ slug, setBookmarks, addRecentItem }) {
     setBookmarks(updated);
     setBookmarked(!bookmarked);
   };
-
-  // SEO: Update page title and description
-  useEffect(() => {
-    document.title = calc.metaTitle || `${calc.name} - CalcNest`;
-    let metaDesc = document.querySelector('meta[name="description"]');
-    if (!metaDesc) {
-      metaDesc = document.createElement('meta');
-      metaDesc.name = 'description';
-      document.head.appendChild(metaDesc);
-    }
-    metaDesc.content = calc.metaDescription || calc.description;
-  }, [calc]);
 
   // Generic Form State Handling
   const [inputs, setInputs] = useState({});
@@ -170,6 +159,10 @@ export default function CalculatorPage({ slug, setBookmarks, addRecentItem }) {
 
   return (
     <div className="container" style={{ padding: '2rem 1.5rem' }}>
+      <SEO 
+        title={calc.metaTitle || `${calc.name} - CalcNest`}
+        description={calc.metaDescription || calc.description}
+      />
       
       {/* HEADER META ROW */}
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '1rem', marginBottom: '1.5rem' }}>

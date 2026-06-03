@@ -1,15 +1,12 @@
 // generate-sitemap.js
 // Node script (ESM) to generate a static sitemap.xml for the calculator website.
-// It reads the calculator registry and creates entries for each calculator, category, homepage, and sitemap itself.
+// Includes lastmod, changefreq, and priority per official sitemap protocol.
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath, pathToFileURL } from 'url';
 
-// Resolve __dirname in ESM
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-
-// Path to the registry file (relative to this script)
 const registryPath = path.join(__dirname, '..', 'src', 'data', 'registry.js');
 
 (async () => {
@@ -17,43 +14,72 @@ const registryPath = path.join(__dirname, '..', 'src', 'data', 'registry.js');
     const registryModule = await import(pathToFileURL(registryPath).href);
     const { calculatorsRegistry } = registryModule;
     const baseUrl = 'https://www.calculatorverse.in';
-    const urls = new Set();
-    // Home page
-    urls.add(`${baseUrl}/`);
-    // Collect calculator URLs and categories
+    const urls = [];
+    const today = new Date().toISOString().split('T')[0];
+
+    // Homepage
+    urls.push({
+      loc: `${baseUrl}/`,
+      lastmod: today,
+      changefreq: 'daily',
+      priority: '1.0'
+    });
+
     const categories = new Set();
+    
+    // Calculators
     for (const key in calculatorsRegistry) {
       const calc = calculatorsRegistry[key];
       if (calc.slug) {
-        urls.add(`${baseUrl}/${calc.slug}`);
+        urls.push({
+          loc: `${baseUrl}/${calc.slug}`,
+          lastmod: today,
+          changefreq: 'weekly',
+          priority: '0.8'
+        });
       }
       if (calc.category) {
         categories.add(calc.category);
       }
     }
-    // Category pages (lower‑case, hyphen‑separated)
+
+    // Category Pages
     for (const cat of categories) {
       const catSlug = cat.toLowerCase().replace(/\s+/g, '-');
-      urls.add(`${baseUrl}/category/${catSlug}`);
+      urls.push({
+        loc: `${baseUrl}/category/${catSlug}`,
+        lastmod: today,
+        changefreq: 'weekly',
+        priority: '0.9'
+      });
     }
-    // Include the sitemap itself (so Google can discover it if needed)
-// urls.add(`${baseUrl}/sitemap.xml`);
+
+    // Include any other static pages if needed
+    // sitemap.xml itself is EXCLUDED by requirement.
 
     // Build XML content
     const sitemapLines = [
       '<?xml version="1.0" encoding="UTF-8"?>',
       '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">'
     ];
+    
     for (const u of urls) {
-      sitemapLines.push('  <url>', `    <loc>${u}</loc>`, '  </url>');
+      sitemapLines.push('  <url>');
+      sitemapLines.push(`    <loc>${u.loc}</loc>`);
+      sitemapLines.push(`    <lastmod>${u.lastmod}</lastmod>`);
+      sitemapLines.push(`    <changefreq>${u.changefreq}</changefreq>`);
+      sitemapLines.push(`    <priority>${u.priority}</priority>`);
+      sitemapLines.push('  </url>');
     }
+    
     sitemapLines.push('</urlset>');
     const sitemapContent = sitemapLines.join('\n');
 
-    // Write to the public folder
+    // Write to public folder
     const outPath = path.join(__dirname, '..', 'public', 'sitemap.xml');
     fs.writeFileSync(outPath, sitemapContent, 'utf8');
-    console.log('✅ Sitemap generated at', outPath);
+    console.log('✅ Sitemap generated successfully at', outPath);
+    console.log(`Included ${urls.length} valid URLs.`);
   } catch (err) {
     console.error('❌ Failed to generate sitemap:', err);
     process.exit(1);

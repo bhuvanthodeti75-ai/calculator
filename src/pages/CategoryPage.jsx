@@ -5,6 +5,7 @@ import {
   DollarSign, Activity, BookOpen, Trophy, 
   Sparkles, Binary, Percent, ChevronRight 
 } from 'lucide-react';
+import SEO from '../components/SEO';
 
 const categoryMeta = {
   'finance': {
@@ -68,18 +69,6 @@ export default function CategoryPage({ categorySlug }) {
     metaDesc: 'Explore CalcNest\'s complete library of free financial, health, student, cricket, and technical converters.'
   };
 
-  // SEO
-  useEffect(() => {
-    document.title = meta.metaTitle;
-    let metaDesc = document.querySelector('meta[name="description"]');
-    if (!metaDesc) {
-      metaDesc = document.createElement('meta');
-      metaDesc.name = 'description';
-      document.head.appendChild(metaDesc);
-    }
-    metaDesc.content = meta.metaDesc;
-  }, [categorySlug, meta]);
-
   // Filter registry
   const categoryCalcs = Object.values(calculatorsRegistry).filter(calc => {
     // Map database category names to URL slugs
@@ -91,6 +80,10 @@ export default function CategoryPage({ categorySlug }) {
 
   return (
     <div className="container" style={{ padding: '2rem 1.5rem' }}>
+      <SEO 
+        title={meta.metaTitle}
+        description={meta.metaDesc}
+      />
       
       {/* Category Hero Header */}
       <div className="card animate-fade-in" style={{ 

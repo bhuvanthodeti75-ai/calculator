@@ -6,16 +6,13 @@ import {
   Sparkles, Binary, Percent, Search, ArrowRight,
   TrendingUp, Award, Clock, HelpCircle, Star
 } from 'lucide-react';
+import SEO from '../components/SEO';
 
 export default function Home({ bookmarks, recents }) {
   const { navigate } = useRouter();
   const [searchQuery, setSearchQuery] = useState('');
   const [searchResults, setSearchResults] = useState([]);
   const [faqOpen, setFaqOpen] = useState({});
-
-  useEffect(() => {
-    document.title = 'CalcNest - Instant Verified Calculators | Free Online Calculator Directory';
-  }, []);
 
   useEffect(() => {
     if (!searchQuery.trim()) {
@@ -67,6 +64,10 @@ export default function Home({ bookmarks, recents }) {
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '4rem', paddingBottom: '4rem' }} className="animate-fade-in">
+      <SEO 
+        title="CalcNest - Instant Verified Calculators | Free Online Calculator Directory"
+        description="CalcNest is a premium online calculator directory featuring 50+ free calculators for finance, health, coding, academic grades, and sports. Find the perfect calculator for your needs."
+      />
       
       {/* 1. HERO SECTION */}
       <section style={{ 

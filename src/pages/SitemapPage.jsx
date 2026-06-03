@@ -2,49 +2,23 @@ import React, { useEffect } from 'react';
 import { Link } from '../utils/router';
 import { calculatorsRegistry } from '../data/registry';
 import { Map, ChevronRight, Award } from 'lucide-react';
+import SEO from '../components/SEO';
 
 export default function SitemapPage() {
   
-  // SEO: Update page metadata & inject Schema.org JSON-LD Structured Data
-  useEffect(() => {
-    document.title = 'Sitemap Directory - All Calculators - CalcNest';
-    let metaDesc = document.querySelector('meta[name="description"]');
-    if (!metaDesc) {
-      metaDesc = document.createElement('meta');
-      metaDesc.name = 'description';
-      document.head.appendChild(metaDesc);
-    }
-    metaDesc.content = 'CalcNest HTML Sitemap Index. Access our complete directory of 50+ calculators for finance, health, student grades, coding converters, and cricket statistics.';
-
-    // Inject JSON-LD Schema
-    const schema = {
-      '@context': 'https://schema.org',
-      '@type': 'ItemList',
-      'name': 'CalcNest Sitemap Directory',
-      'description': 'Complete index of all calculators on CalcNest.',
-      'itemListElement': Object.values(calculatorsRegistry).map((calc, index) => ({
-        '@type': 'ListItem',
-        'position': index + 1,
-        'url': `${window.location.origin}/${calc.slug}`,
-        'name': calc.name
-      }))
-    };
-
-    let scriptTag = document.getElementById('json-ld-sitemap');
-    if (!scriptTag) {
-      scriptTag = document.createElement('script');
-      scriptTag.id = 'json-ld-sitemap';
-      scriptTag.type = 'application/ld-json';
-      document.head.appendChild(scriptTag);
-    }
-    scriptTag.innerHTML = JSON.stringify(schema);
-
-    return () => {
-      // clean up schema on unmount
-      const existing = document.getElementById('json-ld-sitemap');
-      if (existing) existing.remove();
-    };
-  }, []);
+  // Schema.org JSON-LD Structured Data
+  const schema = {
+    '@context': 'https://schema.org',
+    '@type': 'ItemList',
+    'name': 'CalcNest Sitemap Directory',
+    'description': 'Complete index of all calculators on CalcNest.',
+    'itemListElement': Object.values(calculatorsRegistry).map((calc, index) => ({
+      '@type': 'ListItem',
+      'position': index + 1,
+      'url': typeof window !== 'undefined' ? `${window.location.origin}/${calc.slug}` : `https://www.calculatorverse.in/${calc.slug}`,
+      'name': calc.name
+    }))
+  };
 
   // Group calculators by category
   const categoriesMap = {};
@@ -57,6 +31,11 @@ export default function SitemapPage() {
 
   return (
     <div className="container" style={{ padding: '2rem 1.5rem' }}>
+      <SEO 
+        title="Sitemap Directory - All Calculators - CalcNest"
+        description="CalcNest HTML Sitemap Index. Access our complete directory of 50+ calculators for finance, health, student grades, coding converters, and cricket statistics."
+        schema={schema}
+      />
       
       {/* Page Title */}
       <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '2rem' }} className="animate-fade-in">

@@ -24,5 +24,5 @@ export const siteConfig = {
   metaDescriptionFormula: "Use CalculatorVerse's free %s to %s.",
 
   // Additional static URLs (could be used for sitemaps, robots, etc.)
-  baseUrl: "https://calculatorverse.com",
+  baseUrl: "https://www.calculatorverse.in",
 };
